@@ -1,0 +1,15 @@
+transfer.c
+
+Measure DRAM memory bandwidth: how long does it take to scan 64 GB
+of data in RAM?
+
+Compile via
+
+  cc -Wall -O3 transfer.c -o transfer
+
+Execute via
+
+  ./transfer
+
+Can modify SCANSIZE to experiment with memory ranges that do (not) for
+into the CPU caches.
