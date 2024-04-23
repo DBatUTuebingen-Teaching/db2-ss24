@@ -1,0 +1,18 @@
+mmap.c
+
+Map a MonetDB tail file (persistent representation of a column
+vector) into memory and print its contents.  Assumption: the tail
+file contains integers, i.e., the associated BAT is of type bat[:int].
+
+Adapt the definition of macro TAIL to point to your actual tail file
+(recall MAL command bat.info()).
+
+Compile via
+
+  cc -Wall -O2 mmap.c -o mmap
+
+Execute via
+
+  ./mmap
+
+
