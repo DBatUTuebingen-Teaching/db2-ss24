@@ -1,0 +1,27 @@
+services:
+    postgres:
+        container_name: postgres
+        image: "postgres:12"
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER:-postgres}
+            POSTGRES_HOST_AUTH_METHOD: trust
+            PGDATA: /data/postgres
+        volumes:
+            - postgres:/data/postgres
+        ports:
+            - "5432:5432"
+        restart: unless-stopped
+
+    monetdb:
+        container_name: monetdb
+        image: "monetdb/monetdb:Nov2019-SP3"
+        platform: "linux/amd64"
+        volumes:
+            - monetdb:/var/monetdb5/dbfarm
+        ports:
+            - "50000:50000"
+        restart: unless-stopped
+
+volumes:
+    postgres:
+    monetdb:
