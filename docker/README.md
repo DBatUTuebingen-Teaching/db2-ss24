@@ -20,7 +20,7 @@ If you still need a docker installation, follow their [documentation](https://do
 2. RUn `make setup` to download and configure the servers.
 3. Afterwards you can run `make start` to start the servers.
 4. You can freely navigate away from the current directory and access the databases through their respective clients, as shown below.
-5. If you want to stop the servers again, navigate back to the directory with the `docker-compose.yml` and `Makefiel` files and run `make stop`. Then, to start them again, run `make start` as before.
+5. If you want to stop the servers again, navigate back to the directory with the `docker-compose.yml` and `Makefile` files and run `make stop`. Then, to start them again, run `make start` as before.
 
 #### Installing manually
 
