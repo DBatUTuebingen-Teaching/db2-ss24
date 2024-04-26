@@ -36,7 +36,7 @@ If you still need a docker installation, follow their [documentation](https://do
 For both DBMSs, we recommend installing the most recent client through the official means for your OS. Do so by following the install instructions on the respective home pages ([monetdb](https://www.monetdb.org/easy-setup/), [PostgreSQL](https://www.postgresql.org/download/)).
 
 > [!IMPORTANT]
-> Please make sure that the installation process of the respective clients don't configure corresponding servers to start automatically. These servers can and will interfere with those started and managed by docker. On Ubuntu, for example, you can get around this by not installing the `postgresql` package but rather the `postgresql-client` package, which only installs the client, circumventing the issue entirely.
+> Please make sure that the installation processes of the respective clients don't configure corresponding servers to start automatically. These servers can and will interfere with those started and managed by docker. On Ubuntu, for example, you can get around this by not installing the `postgresql` package but rather the `postgresql-client` package, which only installs the client, circumventing the issue entirely.
 
 > [!NOTE]
 > We recommend Windows users to install and run the clients within [WSL](https://learn.microsoft.com/de-de/windows/wsl/). This streamlines the process of installing and using the clients and allows you to easily circumvent many peculiarities of Windows that often lead to issues down the line.
