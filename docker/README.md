@@ -1,14 +1,10 @@
 # DB2 Docker Setup
 
-In this lecture, we rely on [monetdb 11.35](https://www.monetdb.org/release-notes/nov2019/) and [PostgreSQL 12](https://www.postgresql.org/docs/12/index.html).
+In this lecture, we rely on [monetdb 11.35](https://www.monetdb.org/release-notes/nov2019/) and [PostgreSQL >15.6](https://www.postgresql.org/docs/current/index.html).
 
 ## Installation
 
 For simplicity, we recommend installing the most recent versions of the respective clients (`mclient` for monetdb and `psql` for PostgreSQL) and running the respective servers of the appropriate versions through [docker](https://www.docker.com).
-
-### Installing the **clients**
-
-For both DBMSs, we recommend installing the most recent client through the official means for your OS. Do so by following the install instructions on the respective home pages ([monetdb](https://www.monetdb.org/easy-setup/), [PostgreSQL](https://www.postgresql.org/download/)). In most cases, this will also install the most recent version of the respective server, but we will demonstrate how to set up the appropriate version via `docker` and `make` in the following steps.
 
 ### Installing the **servers**
 
@@ -34,6 +30,16 @@ If you still need a docker installation, follow their [documentation](https://do
    * For *PostgreSQL*, no extra steps are required since the container already provides a database called `postgres`. If you want to create a database with a custom name, follow the [documentation](https://www.postgresql.org/docs/12/manage-ag-createdb.html) accordingly.
 4. You can freely navigate away from the current directory and access the databases through their respective clients, as shown below.
 5. If you want to stop the servers again, navigate back to the directory with the `docker-compose.yml` file and run `docker compose down`. Then, to start them again, run `docker compose up -d` as before.
+
+### Installing the **clients**
+
+For both DBMSs, we recommend installing the most recent client through the official means for your OS. Do so by following the install instructions on the respective home pages ([monetdb](https://www.monetdb.org/easy-setup/), [PostgreSQL](https://www.postgresql.org/download/)).
+
+> [!IMPORTANT]
+> Please make sure that the installation process of the respective clients don't configure corresponding servers to start automatically. These servers can and will interfere with those started and managed by docker. On Ubuntu, for example, you can get around this by not installing the `postgresql` package but rather the `postgresql-client` package, which only installs the client, circumventing the issue entirely.
+
+> [!NOTE]
+> We recommend Windows users to install and run the clients within [WSL](https://learn.microsoft.com/de-de/windows/wsl/). This streamlines the process of installing and using the clients and allows you to easily circumvent many peculiarities of Windows that often lead to issues down the line.
 
 ## Usage
 
