@@ -13,7 +13,7 @@ If you still need a docker installation, follow their [documentation](https://do
 #### Installing via the `Makefile`
 
 1. Use your shell to navigate to the directory containing the `docker-compose.yml` and `Makefile` files we've provided.
-2. RUn `make setup` to download and configure the servers.
+2. Run `make setup` to download and configure the servers.
 3. Afterwards you can run `make start` to start the servers.
 4. You can freely navigate away from the current directory and access the databases through their respective clients, as shown below.
 5. If you want to stop the servers again, navigate back to the directory with the `docker-compose.yml` and `Makefile` files and run `make stop`. Then, to start them again, run `make start` as before.
@@ -38,7 +38,7 @@ For both DBMSs, we recommend installing the most recent client through the offic
 > [!IMPORTANT]
 > Please make sure that the installation processes of the respective clients don't configure corresponding servers to start automatically. These servers can and will interfere with those started and managed by docker. On Ubuntu, for example, you can get around this by not installing the `postgresql` package but rather the `postgresql-client` package, which only installs the client, circumventing the issue entirely.
 
-> [!NOTE]
+> [!TIP]
 > We recommend Windows users to install and run the clients within [WSL](https://learn.microsoft.com/de-de/windows/wsl/). This streamlines the process of installing and using the clients and allows you to easily circumvent many peculiarities of Windows that often lead to issues down the line.
 
 ## Usage
@@ -46,6 +46,8 @@ For both DBMSs, we recommend installing the most recent client through the offic
 Once done with the installation and the servers are running, you can connect to them using the respective clients. Again, we've added streamlined options for this in the provided `Makefile`, through we list both options below.
 
 * Run `make postgres` (or `psql -U postgres -h localhost`) to enter PostgeSQL's client shell.
-* Run `make monetdb` (or `mclient -u monetdb -d scratch`) to enter monetdb's client shell. It will prompt you for a password, which is set to `monetdb` by default.
+* Run `make monetdb` (or `mclient -u monetdb -d scratch -l sql`) to enter monetdb's client shell. It will prompt you for a password, which is set to `monetdb` by default.
+> [!NOTE]
+> In the process of the lecture you will also need to enter monetdb's cliebt shell in a different language mode, i.e., MAL code. You can access this mode using `make monetdb-mal` instead of `make monetdb`.
 
 Once in the respective shell, you can create/modify/delete tables, run queries, and interact with underlying data structures and program representations. The lectures will explain everything you need for your homework in due time.
