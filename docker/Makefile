@@ -19,21 +19,29 @@ stop:
 postgres:
 	@$(postgres_client) -U postgres -h localhost
 
+postgres-data:
+	@$(docker_compose) exec -w /data/postgres postgres bash
+
 monetdb:
 	@$(monetdb_client) -u monetdb -d scratch -l sql
 
 monetdb-mal:
 	@$(monetdb_client) -u monetdb -d scratch -l msql
 
+monetdb-data:
+	@$(docker_compose) exec -w /var/monetdb5/dbfarm monetdb bash
+
 help:
-	@echo "command     | description"
-	@echo "------------+---------------------------------------------"
-	@echo "help        | Show this help prompt."
-	@echo "monetdb     | Open the monetdb shell in SQL language mode."
-	@echo "monetdb-mal | Open the monetdb shell in MAL language mode."
-	@echo "postgres    | Open the postgres shell."
-	@echo "setup       | Setup the containers."
-	@echo "start       | Start the containers."
-	@echo "stop        | Stop the running containers."
+	@echo "command       | description"
+	@echo "--------------+---------------------------------------------"
+	@echo "help          | Show this help prompt."
+	@echo "monetdb       | Open the monetdb shell in SQL language mode."
+	@echo "monetdb-mal   | Open the monetdb shell in MAL language mode."
+	@echo "monetdb-data  | Access the monetdb data directory."
+	@echo "postgres      | Open the postgres shell."
+	@echo "postgres-data | Access the postgres data directory."
+	@echo "setup         | Setup the containers."
+	@echo "start         | Start the containers."
+	@echo "stop          | Stop the running containers."
 
 .PHONY: setup start stop clean postgres monetdb monetdb-bat help
