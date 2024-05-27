@@ -1,0 +1,16 @@
+unroll.c
+
+Assess the effect of loop unrolling: replicate the instructions
+inside a loop to increase the ratio of useful work being done
+over the necessary (for-)loop control.  In this code, the loop
+has been unrolled four times.  Note that the unrolled routine
+only performs correctly for vector size that are divisble by 4.
+
+Compile via
+
+  cc -Wall -O2 -fno-vectorize -fno-unroll-loops unroll.c -o unroll
+
+Execute via
+
+  ./unroll       # measure loop runtime, NO unrolling performed
+  ./unroll -u    # measure runtime of unrolled loop
