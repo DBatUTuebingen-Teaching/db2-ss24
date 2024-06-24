@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>I/O Characteristics and Performance of External Sorting</title>
+
+    <style>
+      body { font-family: "PragmataPro", "Helvetica"; }
+    </style>
+
+    <!-- Tangle -->
+    <script type="text/javascript" src="Tangle.js"></script>
+
+    <!-- TangleKit (optional) -->
+    <link rel="stylesheet" href="TangleKit/TangleKit.css" type="text/css">
+    <script type="text/javascript" src="TangleKit/mootools.js"></script>
+    <script type="text/javascript" src="TangleKit/sprintf.js"></script>
+    <script type="text/javascript" src="TangleKit/BVTouchable.js"></script>
+    <script type="text/javascript" src="TangleKit/TangleKit.js"></script>
+
+    <!-- example -->
+    <script type="text/javascript">
+
+        function setUpTangle () {
+
+            var element = document.getElementById("external-sorting");
+
+            var tangle = new Tangle(element, {
+                initialize: function () {
+                    // unit conversions
+                    MiB = 1024;            // KiB in a MiB
+                    GiB = MiB * MiB;
+
+                    min = 60000;           // ms in a min
+                    hour = 60;             // mins in an hour
+
+                    // database characteristics
+                    this.pagesize = 8;     // page size in KiB
+                    this.B = 16384;        // # of pages in buffer (= 128 MB ≡ PostgreSQL shared_buffers default)
+                    this.b = 1;            // blocking factor
+
+                    // disk characteristics
+                    this.seekTime = 3.4;   // disk seek time in ms (Seagate Cheetah 15K.7 HDD)
+                    this.throughput = 163; // read/write bandwidth in MiB/s (Seagate Cheetah 15K.7 HDD)
+
+                    // size of sort problem
+                    this.filesize = 8;     // input file size in GiB
+                },
+                update: function () {
+                    this.transferTime      = 1 / (this.throughput / this.pagesize);                                // block transfer time in ms;
+                    this.bufferSize        = (this.B * this.pagesize) / MiB;                                       // buffer size in MiB
+                    this.N                 = Math.ceil(this.filesize * GiB / this.pagesize);                       // # of pages in input
+                    this.runsInPass0       = Math.ceil(this.N / this.B);                                           // # of runs produced by pass 0
+                    this.lastRunInPass0    = this.N % this.B;                                                      // size of last partial run in pass0 (if any)
+                    this.fanIn             = Math.floor((this.B - 1) / this.b);                                    // # of runs merged in passed 1,2,...
+                    this.passes            = Math.ceil(Math.log(this.runsInPass0) / Math.log(this.fanIn));         // # of merge passes needed
+                    this.twoWay            = this.fanIn == 2;                                                      // is this a two-way sort?
+                    this.IOs               = 2 * this.N * (1 + this.passes);                                       // # of I/O read/writes initiated
+                    this.seeks             = 2 * this.runsInPass0 + 2 * this.passes * Math.ceil(this.N / this.b);  // # of disk seeks incurred
+                    this.overallSeekTime   = (this.seeks * this.seekTime) / min;                                   // overall seek time spent in mins
+                    this.overallIOTime     = (this.IOs * this.transferTime) / min;                                 // overall I/O time needed in mins
+                    this.overallTime       = this.overallSeekTime + this.overallIOTime;                            // overall time in mins
+                    this.overallTimeHours  = this.overallTime / hour;                                              // overall time in hours
+                    this.overallTimeIsLong = 120 - this.overallTime;                                               // is the overall time rather in the range of hours than minutes?
+                }
+            });
+        }
+
+    </script>
+</head>
+
+<body onload="setUpTangle();">
+
+    <h1>I/O Characteristics and Performance of External Sorting</h1>
+
+    <div id="external-sorting">
+
+        <p><b>Database Characteristics</b></p>
+
+        Database page size:
+        <span data-var="pagesize" class="TKAdjustableNumber" data-min="1" data-max="256"> KiB</span>
+        <br/>
+        Available working space in database buffer (<i>B</i>):
+        <span data-var="B" class="TKAdjustableNumber" data-min="3" data-max="1000000" data-step="100"> pages</span>
+        (that's <span data-var="bufferSize" data-format="%.1f"> MiB</span>)
+        <br/>
+        I/O blocking factor (<i>b</i>):
+        <span data-var="b" class="TKAdjustableNumber" data-min="1" data-max="256"> pages</span>
+
+        <p><b>Disk Characteristics</b></p>
+
+        Disk seek time:
+        <span data-var="seekTime" class="TKAdjustableNumber" data-min="0" data-max="20"> ms</span>
+        <br/>
+        Disk read/write speed:
+        <span data-var="throughput" class="TKAdjustableNumber" data-min="5" data-max="2000" data-step="10"> MiB/s</span>
+        <br/>
+        Resulting transfer time for a
+        <span data-var="pagesize"> KiB</span>
+        block:
+        <span data-var="transferTime" data-format="%.3f"> ms</span>
+
+        <p><b>Size of Sort Problem</b></p>
+
+        Size of input file to be sorted:
+        <span data-var="filesize" class="TKAdjustableNumber" data-min="0" data-max="1000" data-step="0.5"> GiB</span>
+        (this makes for <i>N</i> =
+        <span data-var="N"> pages</span>
+        of input)
+
+        <hr/>
+
+        <p><b>Resulting External Sort Behavior</b></p>
+
+        Pass 0 will produce
+        <span data-var="runsInPass0"> runs</span>,
+        each of size
+        <span data-var="B"> pages</span>
+        <span data-var="lastRunInPass0" class="TKIf"> but the last run (which only has <span data-var="lastRunInPass0"> pages</span>)</span>.
+        <br/>
+        We will need
+        <span data-var="passes"/>
+        merge passes, with a fan-in of
+        <span data-var="fanIn"/>.
+        <span data-var="twoWay" class="TKIf">(This is a two-way merge sort.)</span>
+
+        <p><b>Resulting I/O and Disk Seek Effort</b></p>
+
+        The sort process will initiate
+        <span data-var="IOs"> I/O operations</span>
+        (reads and writes) and
+        <span data-var="seeks"> disk head seeks</span>.
+
+        <p><b>Resulting Overall Time for Sort Process</b></p>
+
+        Disk seeking will need
+        <span data-var="overallSeekTime" data-format="%.1f"> minutes</span>,
+        while
+        <span data-var="overallIOTime" data-format="%.1f"> minutes</span>
+        is spent on I/O itself.
+
+        <br/>
+
+        <!-- FIXME: use class TKSwitch to switch between minutes/hours display
+             (e.g., switch if time >= 120 minutes)
+         -->
+        Overall, we end up waiting
+        <b>
+            <span data-var="overallTimeIsLong" class="TKSwitchPositiveNegative">
+                <span data-var="overallTime" data-format="%.1f"> minutes</span>
+                <span data-var="overallTimeHours" data-format="%.1f"> hours</span>
+            </span>
+        </b>
+        for the sort result.
+    </div>
+
+    <hr/>
+
+    <p style="text-align:right; font-size: 10pt">
+        Made with <a href="http://worrydream.com/Tangle/">Tangle.js</a>.
+    </p>
+</body>
+</html>
